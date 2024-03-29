@@ -40,30 +40,13 @@ export const SECTION_LIST_MOCK_DATA = [
  * @see https://reactnative.dev/docs/sectionlist as a reference
  */
 export function getSectionListData(data) {
-	const mocData = [];
-	data.forEach((ele) => {
-		isMatched = false;
-		mocData.forEach((ele1) => {
-			if (ele1.title == ele.category) {
-				ele1.data = [
-					...ele1.data,
-					{
-						id: ele.id,
-						title: ele.title,
-						price: ele.price,
-					},
-				];
-				isMatched = true;
-			}
-		});
-		if (!isMatched) {
-			mocData.push({
-				title: ele.category,
-				data: [{ id: ele.id, title: ele.title, price: ele.price }],
-			});
-		}
-	});
-	return mocData;
+	const categories = [...new Set(data.map((item) => item.category))];
+	return categories.reduce((acc, current) => {
+		const updatedData = data
+			.filter((item) => item.category === current)
+			.map((item) => ({ id: item.id, title: item.title, price: item.price }));
+		return [...acc, { title: current, data: updatedData }];
+	}, []);
 }
 
 export function useUpdateEffect(effect, dependencies = []) {
